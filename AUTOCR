@@ -61,13 +61,13 @@
     wait(0.5)
     windower.send_command('input //lua reload targeter')
     wait(0.5)
-    windower.send_command('send zkythunder //lua reload autosmn')
+    windower.send_command('send "your character" //lua reload autosmn')
     wait(0.5)
-    windower.send_command('send zkythunder //asmn start')
+    windower.send_command('send "your character" //asmn start')
     wait(0.5)
-    windower.send_command('send zkymeteor //lua reload autopld')
+    windower.send_command('send "your character" //lua reload autopld')
     wait(0.5)
-    windower.send_command('send zkymeteor //lua apld start')
+    windower.send_command('send "your character" //lua apld start')
   end
   
   function stopAws()
@@ -131,14 +131,14 @@
               mob = windower.ffxi.get_mob_by_target('t')
             end     
             wait(0.1)  
-            windower.send_command('send zkymeteor /attack <bt>')
+            windower.send_command('send "your character" /attack <bt>')
           end
           wait(0.1)
           windower.send_command('input /echo Get over Here <t>!')
           wait(0.5)
           windower.send_command('input /lockon')
           wait(1)
-          windower.send_command('send zkythunder /attack <bt>')
+          windower.send_command('send "your character" /attack <bt>')
           wait(1.5)
           windower.send_command('input /item "Grape Daifuku" <me>')
     end
