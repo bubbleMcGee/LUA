@@ -1,0 +1,287 @@
+
+  _addon.version = 'COR.1.3.0'
+  _addon.commands = {'autocr', 'acr'}
+  
+  -- added WS Skillchain and JA timers
+  -- add exception handling and mob HP requirements
+  -- work on pull() fails by moving steps from 1 function to another
+  
+  require('functions')
+  config = require('config')
+  packets = require('packets')
+  
+  -- get objects
+  
+  local melee = windower.ffxi.get_player()
+  
+  local config = require('config')
+  
+  local party = windower.ffxi.get_party()
+      
+  local smn = party.p2
+  
+  local sam = party.p1
+  
+  local corAbilities = windower.ffxi.get_ability_recasts()
+  
+  local roll1 = nil
+  
+  local roll2 = nil
+  
+  local broken = false
+  
+  local gear = windower.ffxi.get_items()
+  
+  local bullets = 0
+  
+  -- end get objects
+  
+  -- set default values
+  
+  local loopStatus = false
+  
+  local tankStat = 0
+  
+  local gotBuff = nil
+  
+  local needBuff = nil
+  
+  local pulling = false
+  
+  local meleeJp = 0
+  
+  local mob = nil
+  
+  -- end default values
+  
+  -- define functions
+  
+  function startAws()
+    loopStatus = true
+    wait(0.5)
+    windower.send_command('input //lua reload targeter')
+    wait(0.5)
+    windower.send_command('send zkythunder //lua reload autosmn')
+    wait(0.5)
+    windower.send_command('send zkythunder //asmn start')
+    wait(0.5)
+    windower.send_command('send zkymeteor //lua reload autopld')
+    wait(0.5)
+    windower.send_command('send zkymeteor //lua apld start')
+  end
+  
+  function stopAws()
+    loopStatus = false
+  end
+    
+  function pullAws()
+    corAbilities = windower.ffxi.get_ability_recasts() 
+    melee = windower.ffxi.get_player()
+   -- print(bullets)
+    if tankStat == 0 and loopStatus then
+   -- ammo check again
+          gear = windower.ffxi.get_items()
+          bullets = gear.equipment.ammo
+          wait(1)  
+          if bullets == 0 then
+            windower.send_command('input /item "Brz. Bull. Pouch" <me>')  
+            wait(2)
+            windower.send_command('input /item "O. Bull. Pouch" <me>')  
+            wait(1.5)
+            windower.send_command('input /equip ammo "Bronze Bullet"')  
+            if bullets == 0 then
+            stopAws() end
+          end    
+          windower.send_command('input //targ target')
+          wait(0.1)
+          mob = windower.ffxi.get_mob_by_target('t')
+          melee = windower.ffxi.get_player()
+          windower.send_command('input /echo Proceeding <t>')
+          wait(0.75)
+          windower.send_command('input /ra <t>')          
+          wait(0.1)
+          mob = windower.ffxi.get_mob_by_target('t')
+          wait(0.1)
+          melee = windower.ffxi.get_player()
+          wait(0.1)
+          party = windower.ffxi.get_party()
+          wait(3)
+          windower.send_command('input /attack <t>')
+          wait(1.4)  
+          windower.send_command('send zkymeteor /attack <bt>')
+          wait(1.4)  
+          melee = windower.ffxi.get_player()
+          if melee.status~= 1 then 
+            melee = windower.ffxi.get_player()
+            party = windower.ffxi.get_party()      
+            mob = windower.ffxi.get_mob_by_target('t')
+            while  mob.claim_id ~= melee.id or melee.status~= 1 do 
+              windower.send_command('input //targ target')
+              wait(0.1)
+              windower.send_command('input /echo Proceeding again <t>')
+              wait(0.5)
+              windower.send_command('input /ra <t>')
+              wait(0.5)
+              windower.send_command('input /ra <t>')  
+              wait(3)
+              windower.send_command('input /attack <t>')
+              wait(1.4)
+              melee = windower.ffxi.get_player()
+              party = windower.ffxi.get_party()      
+              mob = windower.ffxi.get_mob_by_target('t')
+            end     
+            wait(0.1)  
+            windower.send_command('send zkymeteor /attack <bt>')
+          end
+          wait(0.1)
+          windower.send_command('input /echo Get over Here <t>!')
+          wait(0.5)
+          windower.send_command('input /lockon')
+          wait(1)
+          windower.send_command('send zkythunder /attack <bt>')
+          wait(1.5)
+          windower.send_command('input /item "Grape Daifuku" <me>')
+    end
+    wait(1.5)
+    pulling = false
+    mob = windower.ffxi.get_mob_by_target('t')
+  end
+  
+  function wait(time)
+    local duration = os.time() + time
+    while os.time() < duration do 
+    end
+  end
+  
+  -- end functions
+  
+  -- automations
+  
+  -- ws buff automation from TP
+  
+  windower.register_event('lose buff', function(buff_id)
+      corAbilities = windower.ffxi.get_ability_recasts()
+      mob = windower.ffxi.get_mob_by_target('t')
+      lostBuff = buff_id
+      if lostBuff == 326 then
+        needBuff = lostBuff
+      elseif lostBuff == 313 then
+        needBuff = lostBuff  
+      end
+  end)
+  
+    windower.register_event('gain buff', function(buff_id)
+      mob = windower.ffxi.get_mob_by_target('t')
+      gotBuff = buff_id
+      if tankStat ~= 0 and melee.target ~= 0 and loopStatus and pulling ~= true then
+            if gotBuff == 326 then
+              roll1 = gotBuff
+            elseif gotBuff == 313 then
+              roll2 = gotBuff 
+            end
+      end
+    end)
+  
+  -- end ws buff from TP
+
+  -- pull mob automation
+  
+  windower.register_event('status change', function(new_status_id)
+    tankStat = new_status_id
+    melee = windower.ffxi.get_player()
+    meleeJp = tonumber(melee.job_points.cor.jp)  
+    pulling = true
+    wait(1.5)
+    gear = windower.ffxi.get_items()
+    bullets = gear.equipment.ammo
+    if new_status_id == 0 and loopStatus then
+      melee = windower.ffxi.get_player() 
+      gear = windower.ffxi.get_items()
+      bullets = gear.equipment.ammo
+      wait(1)  
+      if bullets == 0 then
+        windower.send_command('input /item "Brz. Bull. Pouch" <me>')  
+       wait(2)
+        windower.send_command('input /item "O. Bull. Pouch" <me>')  
+        wait(1.5)
+        windower.send_command('input /equip ammo "Bronze Bullet"') 
+        if bullets == 0 then
+        wait(2)
+        stopAws() end
+      end   
+      wait(1.5)
+      pullAws()      
+    elseif new_status_id == 2 then
+      wait(1)
+      windower.send_command('input //cor loopff')
+      print(os.time())    
+    elseif meleeJp >= 600 then
+      wait(0.3)
+      loopStatus = false
+      print(os.time())    
+    end
+    pulling = false
+  end)
+  
+  windower.register_event('action', function(act)
+    gear = windower.ffxi.get_items()
+    melee = windower.ffxi.get_player()
+    bullets = gear.equipment.ammo
+  end)
+  
+
+  windower.register_event('action message', function(message_id)
+
+  end)  
+  
+  -- end pull mob automation
+  
+  -- skillchain automation
+  
+  windower.register_event('time change', function(new,old)
+    party = windower.ffxi.get_party()
+    melee = windower.ffxi.get_player()
+    gear = windower.ffxi.get_items()
+    bullets = gear.equipment.ammo
+    corAbilities = windower.ffxi.get_ability_recasts()
+    mob = windower.ffxi.get_mob_by_target('t')
+    if tankStat ~= 0 and loopStatus and pulling == false then        
+       if corAbilities[196] == 0 and melee.vitals.tp < 2100 then
+          windower.send_command('input /ja "Random Deal" <me>')
+          wait(2)
+       elseif melee.vitals.tp >= 1100 and corAbilities[196] ~= 0 then
+          windower.send_command('input /ja "Box Step" <t>')
+          wait(2)
+          windower.send_command('input /ws "Savage Blade" <t>')
+       end
+    end         
+  end)
+  
+  -- end skillchain automation
+  
+  -- end automation
+  
+  -- commands
+  
+  windower.register_event('addon command', function(command)
+      command = command and command:lower()  
+      if command == 'start' then
+          windower.send_command('input /echo Party Time!')
+          wait(0.5)
+          windower.send_command('input //cor loopon')
+          startAws()
+      elseif command == 'stop' then
+          stopAws()
+          wait(0.5)
+          windower.send_command('input //cor loopff')
+      elseif command == 'pull' then
+          pullAws()
+      elseif command == 'ammo' then
+          print(bullets)
+          --print(mob.claim_id)
+          --print(melee.id)
+      end
+  end)
+  
+  -- end commands
+
