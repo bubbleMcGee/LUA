@@ -2,9 +2,9 @@ include('organizer-lib')
 
 function get_sets()
 
-local astral == false
+local astral = false
 
-local apogee == false
+local apogee = false
  
     sets.idle = {}                  -- Leave this empty.
     sets.precast = {}               -- leave this empty    
