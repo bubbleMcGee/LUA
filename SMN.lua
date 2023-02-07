@@ -33,7 +33,7 @@ local apogee = false
         main={ name="Espiritus", augments={'Enmity-6','Pet: "Mag.Atk.Bns."+30','Pet: Damage taken -4%',}},
         sub="Vox Grip",
         ammo="Sancus Sachet +1",
-        head={ name="Glyphic Horn +3", augments={'Enhances "Astral Flow" effect',}},
+        head="Beckoner's Horn +2",
         body="Con. Doublet +3",
         hands="Lamassu Mitts",
         legs={ name="Glyphic Spats +3", augments={'Increases Sp. "Blood Pact" accuracy',}},
@@ -103,9 +103,19 @@ local apogee = false
         back={ name="Campestres's Cape", augments={'Pet: M.Acc.+20 Pet: M.Dmg.+20','Pet: Magic Damage+5',}},    
     }                   
 
-
-
 -- End Astral flow
+
+sets.precast.fastCast={
+    head={ name="Merlinic Hood", augments={'"Mag.Atk.Bns."+30','"Fast Cast"+5','CHR+8',}},
+    body={ name="Merlinic Jubbah", augments={'Mag. Acc.+20','"Fast Cast"+6','DEX+5','"Mag.Atk.Bns."+7',}},
+    hands={ name="Bagua Mitaines +1", augments={'Enhances "Curative Recantation" effect',}},
+    legs={ name="Bagua Pants +2", augments={'Enhances "Mending Halation" effect',}},
+    feet={ name="Bagua Sandals +3", augments={'Enhances "Radial Arcana" effect',}},
+    waist="Rumination Sash",
+    left_ear="Malignance Earring",
+    right_ear="Magnetic Earring",
+    right_ring="Kishar Ring",
+}
     
     sets.midcast.hybbp = {
         main="Nirvana",
@@ -169,14 +179,10 @@ local apogee = false
     Additional_effect_BPs = T{'Rock Throw'}  
  
 end
-
-function pet_precast(spell)
-  if spell.type == "BloodPactRage" or "BloodPactWard" then
-    if apogee or astral then
-      return
-    else
-      equip(sets.precast.bpdel)
-    end
+ 
+function precast(spell)
+  if spell.type == "WhiteMagic" or "SummonerPact" then
+     equip(sets.precast.fastCast)
   elseif spell.type == "JobAbility" then
     if spell.name:match('Astral Flow') then
       equip(sets.precast.aFlow)
@@ -184,7 +190,7 @@ function pet_precast(spell)
   end
 end
 
-function precast(spell)
+function midcast(spell)
   if spell.type == "BloodPactRage" or "BloodPactWard" then
     if apogee or astral then
       return
@@ -198,7 +204,7 @@ function precast(spell)
   end
 end
  
-function midcast(spell)
+function pet_midcast(spell)
   if spell.type == "BloodPactRage" then
     if Magical_BPs:contains(spell.name) or string.find(spell.name,' II') or string.find(spell.name,' IV') then
       equip(sets.midcast.magbp)
