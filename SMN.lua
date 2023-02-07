@@ -169,7 +169,21 @@ local apogee = false
     Additional_effect_BPs = T{'Rock Throw'}  
  
 end
- 
+
+function pet_precast(spell)
+  if spell.type == "BloodPactRage" or "BloodPactWard" then
+    if apogee or astral then
+      return
+    else
+      equip(sets.precast.bpdel)
+    end
+  elseif spell.type == "JobAbility" then
+    if spell.name:match('Astral Flow') then
+      equip(sets.precast.aFlow)
+    end
+  end
+end
+
 function precast(spell)
   if spell.type == "BloodPactRage" or "BloodPactWard" then
     if apogee or astral then
