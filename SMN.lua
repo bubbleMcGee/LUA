@@ -171,12 +171,13 @@ local apogee = false
 end
  
 function precast(spell)
-  if spell.type == 'BloodPact' then
+  if spell.type == "BloodPactRage" or "BloodPactWard" then
     if apogee or astral then
+      return
     else
       equip(sets.precast.bpdel)
     end
-  elseif spell.type == 'JobAbility' then
+  elseif spell.type == "JobAbility" then
     if spell.name:match('Astral Flow') then
       equip(sets.precast.aFlow)
     end
@@ -194,7 +195,7 @@ function midcast(spell)
     end  
   elseif spell.type == "BloodPactWard" then
     equip(sets.midcast.buffbp)
-  elseif spell.type == 'JobAbility' then
+  elseif spell.type == "JobAbility" then
     if spell.name:match('Astral Flow') then
       equip(sets.midcast.aFlow)
     end
