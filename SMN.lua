@@ -23,7 +23,7 @@ local apogee = false
         neck="Caller's Pendant",
         waist="Lucidity Sash",
         left_ear={ name="Moonshade Earring", augments={'HP+25','Latent effect: "Refresh"+1',}},
-        right_ear="Evans Earring",
+        right_ear={ name="Beck. Earring", augments={'System: 1 ID: 1676 Val: 0','Pet: Accuracy+6 Pet: Rng. Acc.+6','Pet: Mag. Acc.+6',}},
         left_ring="Evoker's Ring",
         right_ring="Woltaris Ring",
         back={ name="Campestres's Cape", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20','Pet: Attack+10 Pet: Rng.Atk.+10','Pet: Haste+3',}},    
@@ -72,17 +72,7 @@ local apogee = false
         sub="Elan Strap +1",
         ammo="Sancus Sachet +1",
         head={ name="Glyphic Horn +3", augments={'Enhances "Astral Flow" effect',}},
-        body={ name="Apo. Dalmatica +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}},
-        hands={ name="Merlinic Dastanas", augments={'Pet: Mag. Acc.+23 Pet: "Mag.Atk.Bns."+23','Blood Pact Dmg.+10','Pet: INT+9','Pet: Mag. Acc.+8',}},
-        legs={ name="Glyphic Spats +3", augments={'Increases Sp. "Blood Pact" accuracy',}},
-        feet={ name="Apogee Pumps +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}},
-        neck={ name="Smn. Collar +1", augments={'Path: A',}},
-        waist="Regal Belt",
-        left_ear="Lugalbanda Earring",
         right_ear={ name="Beck. Earring", augments={'System: 1 ID: 1676 Val: 0','Pet: Accuracy+6 Pet: Rng. Acc.+6','Pet: Mag. Acc.+6',}},
-        left_ring="Varar Ring",
-        right_ring="Varar Ring +1",
-        back={ name="Campestres's Cape", augments={'Pet: M.Acc.+20 Pet: M.Dmg.+20','Pet: Magic Damage+5',}},    
     }                   
 
     sets.midcast.aFlow = {
@@ -90,17 +80,7 @@ local apogee = false
         sub="Elan Strap +1",
         ammo="Sancus Sachet +1",
         head={ name="Glyphic Horn +3", augments={'Enhances "Astral Flow" effect',}},
-        body={ name="Apo. Dalmatica +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}},
-        hands={ name="Merlinic Dastanas", augments={'Pet: Mag. Acc.+23 Pet: "Mag.Atk.Bns."+23','Blood Pact Dmg.+10','Pet: INT+9','Pet: Mag. Acc.+8',}},
-        legs={ name="Glyphic Spats +3", augments={'Increases Sp. "Blood Pact" accuracy',}},
-        feet={ name="Apogee Pumps +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}},
-        neck={ name="Smn. Collar +1", augments={'Path: A',}},
-        waist="Regal Belt",
-        left_ear="Lugalbanda Earring",
         right_ear={ name="Beck. Earring", augments={'System: 1 ID: 1676 Val: 0','Pet: Accuracy+6 Pet: Rng. Acc.+6','Pet: Mag. Acc.+6',}},
-        left_ring="Varar Ring",
-        right_ring="Varar Ring +1",
-        back={ name="Campestres's Cape", augments={'Pet: M.Acc.+20 Pet: M.Dmg.+20','Pet: Magic Damage+5',}},    
     }                   
 
 -- End Astral flow
@@ -191,7 +171,11 @@ function precast(spell)
 end
 
 function midcast(spell)
-  if spell.type == "BloodPactRage" or "BloodPactWard" then
+  if spell.name:match('Garland of Bliss')then
+    return
+  elseif spell.name:match('Shattersoul')then
+    return
+  elseif spell.type == "BloodPactRage" or "BloodPactWard" then
     if apogee or astral then
       return
     else
