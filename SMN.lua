@@ -5,6 +5,8 @@ function get_sets()
 local astral = false
 
 local apogee = false
+
+local conduit = false
  
     sets.idle = {}                  -- Leave this empty.
     sets.precast = {}               -- leave this empty    
@@ -162,7 +164,11 @@ end
  
 function precast(spell)
   if spell.type == "WhiteMagic" or "SummonerPact" then
-     equip(sets.precast.fastCast)
+     if apogee or conduit then
+      return
+     else 
+      equip(sets.precast.fastCast)
+     end
   elseif spell.type == "JobAbility" then
     if spell.name:match('Astral Flow') then
       equip(sets.precast.aFlow)
@@ -176,7 +182,7 @@ function midcast(spell)
   elseif spell.name:match('Shattersoul')then
     return
   elseif spell.type == "BloodPactRage" or "BloodPactWard" then
-    if apogee or astral then
+    if apogee or conduit then
       return
     else
       equip(sets.precast.bpdel)
@@ -207,11 +213,16 @@ function pet_midcast(spell)
 end
  
 function pet_aftercast(spell)
-    idle()
+    if apogee or conduit then
+      return
+    else
+      idle()
+    end
 end
 
 function aftercast(spell)
-    if spell.type == "BloodPactWard" or spell.type == "BloodPactRage" then
+    if apogee or conduit then
+      return
     else
       idle()
     end  
@@ -226,6 +237,8 @@ end
       astral = false
     elseif buff_id == 583 then
       apogee = false
+    elseif buff_id == 337 then
+      conduit = false
     end
   end)
   
@@ -234,6 +247,8 @@ end
       astral = true 
      elseif buff_id == 583 then 
       apogee = true
+     elseif buff_id == 337 then
+      conduit = true
      end
     end)
     
