@@ -169,10 +169,8 @@ function precast(spell)
      else 
       equip(sets.precast.fastCast)
      end
-  elseif spell.type == "JobAbility" then
-    if spell.name:match('Astral Flow') then
+  elseif spell.name:match('Astral Flow') then
       equip(sets.precast.aFlow)
-    end
   end
 end
 
@@ -187,10 +185,8 @@ function midcast(spell)
     else
       equip(sets.precast.bpdel)
     end
-  elseif spell.type == "JobAbility" then
-    if spell.name:match('Astral Flow') then
+  elseif spell.name:match('Astral Flow') then
       equip(sets.precast.aFlow)
-    end
   end
 end
  
@@ -205,10 +201,6 @@ function pet_midcast(spell)
     end  
   elseif spell.type == "BloodPactWard" then
     equip(sets.midcast.buffbp)
-  elseif spell.type == "JobAbility" then
-    if spell.name:match('Astral Flow') then
-      equip(sets.midcast.aFlow)
-    end
   end
 end
  
@@ -233,21 +225,21 @@ function idle()
 end
 
   windower.register_event('lose buff', function(buff_id)
-    if buff_id == 504 then
+    if buff_id == 55 then
       astral = false
     elseif buff_id == 583 then
       apogee = false
-    elseif buff_id == 337 then
+    elseif buff_id == 504 then
       conduit = false
     end
   end)
   
     windower.register_event('gain buff', function(buff_id)
-     if buff_id == 504 then
+     if buff_id == 55 then
       astral = true 
      elseif buff_id == 583 then 
       apogee = true
-     elseif buff_id == 337 then
+     elseif buff_id == 504 then
       conduit = true
      end
     end)
